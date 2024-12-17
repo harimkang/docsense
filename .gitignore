@@ -58,5 +58,4 @@ htmlcov/
 *.pkl
 *.pth
 data/
-models/
 index/

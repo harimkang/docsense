@@ -61,16 +61,13 @@ class DocSense:
         self.doc_loader = DocumentLoader()
 
         # Initialize vector store
-        if self._embedding_model:
-            self._vector_store = VectorStore(
-                dimension=self._embedding_model.get_embedding_dim(),
-                index_path=str(self.index_path),
-                use_gpu=use_gpu_faiss,
-            )
-        else:
-            self._vector_store = None
+        self._vector_store = VectorStore(
+            dimension=self._embedding_model.get_embedding_dim(),
+            index_path=str(self.index_path),
+            use_gpu=use_gpu_faiss,
+        )
 
-        self._response_cache = {}  # Simple cache for responses
+        self._response_cache: dict[str, Any] = {}  # Simple cache for responses
 
     def _init_models(self):
         """Initialize the models."""
@@ -86,6 +83,10 @@ class DocSense:
 
         Args:
             doc_path: Path to the documents directory
+
+        Raises:
+            ValueError: If no documents are found in the specified path
+            Exception: If there are errors during embedding generation or vector store operations
         """
         try:
             print(f"\nStarting document indexing from: {doc_path}")
@@ -103,7 +104,7 @@ class DocSense:
 
             print(f"\nProcessing {len(documents)} documents...")
 
-            # Generate embeddings (texts는 메모리 효율을 위해 generator로)
+            # Generate embeddings (using generator for memory efficiency)
             texts = (doc.content for doc in documents)
             texts_list = list(texts)
             print(f"Generating embeddings for {len(texts_list)} texts...")
@@ -136,13 +137,23 @@ class DocSense:
             question: User question
 
         Returns:
-            Dict containing answer and relevant source information
+            Dict containing:
+                - answer: Generated response to the question
+                - sources: List of relevant source documents with metadata
+                - metadata: Additional information about prompt and generation config
+
+        Raises:
+            RuntimeError: If no documents have been indexed yet
         """
-        # Check cache
+
+        # Normalize question for cache key
         cache_key = question.strip().lower()
+
+        # Check cache
         if cache_key in self._response_cache:
             return self._response_cache[cache_key]
 
+        # Generate new response
         if not self._vector_store:
             raise RuntimeError("No documents have been indexed yet")
 
@@ -153,31 +164,35 @@ class DocSense:
         relevant_docs = self._vector_store.search(question_embedding)
 
         if not relevant_docs:
-            return {"answer": "I couldn't find any relevant information to answer your question.", "sources": []}
+            response = {
+                "answer": "I couldn't find any relevant information to answer your question.",
+                "sources": [],
+                "metadata": {},
+            }
+        else:
+            # Prepare context and sources
+            context = []
+            sources = []
+            for doc, score in relevant_docs:
+                context.append(doc.content)
+                sources.append(
+                    {
+                        "path": doc.metadata.get("source", "Unknown"),
+                        "type": doc.metadata.get("type", "Unknown"),
+                        "relevance_score": float(score),
+                    }
+                )
 
-        # Prepare context and sources with scores
-        context = []
-        sources = []
-        for doc, score in relevant_docs:
-            context.append(doc.content)
-            sources.append(
-                {
-                    "path": doc.metadata.get("source", "Unknown"),
-                    "type": doc.metadata.get("type", "Unknown"),
-                    "relevance_score": float(score),  # numpy float를 Python float로 변환
-                }
-            )
-
-        # Generate answer
-        response = self._llm.generate(question, context=context)
+            # Generate answer
+            llm_response = self._llm.generate(question, context=context)
+            response = {
+                "answer": llm_response["answer"],
+                "sources": sources,
+                "metadata": {"prompt": llm_response["prompt"], "generation_config": llm_response["generation_config"]},
+            }
 
         # Cache response
-        response = {
-            "answer": response["answer"],
-            "sources": sources,  # 모든 소스 정보를 포함
-            "metadata": {"prompt": response["prompt"], "generation_config": response["generation_config"]},
-        }
-
+        self._response_cache[cache_key] = response
         return response
 
 

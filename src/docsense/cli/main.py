@@ -53,6 +53,8 @@ def index(
     """Create document index from the specified path."""
     try:
         console.print(Panel("Creating document index...", title="DocSense"))
+        if index_path == DEFAULT_INDEX_PATH:
+            console.print(f"[blue]Using default index path: {DEFAULT_INDEX_PATH}[/blue]")
         start_time = time.time()
 
         create_index(str(path), model_name=model_name, device=device, index_path=str(index_path))
@@ -87,7 +89,8 @@ def ask(
         elapsed_time = time.time() - start_time
         console.print(
             Panel(
-                response["answer"], title="Answer", subtitle=f"Source: {response.get('source', 'No specific source')}"
+                response["answer"],
+                title="Answer",
             )
         )
         console.print(f"[yellow]Time taken: {format_time(elapsed_time)}[/yellow]")
@@ -123,7 +126,6 @@ def daemon(
                 Panel(
                     response["answer"],
                     title="Answer",
-                    subtitle=f"Source: {response.get('source', 'No specific source')}",
                 )
             )
             console.print(f"[yellow]Time taken: {format_time(elapsed_time)}[/yellow]\n")

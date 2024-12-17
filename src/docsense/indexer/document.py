@@ -77,27 +77,30 @@ class DocumentChunker:
             and associated metadata.
         """
         if len(text) <= self.chunk_size:
-            return [Document(content=text, metadata=metadata)]
+            chunk_metadata = {**metadata, "chunk_start": 0, "chunk_end": len(text)}
+            return [Document(content=text, metadata=chunk_metadata)]
 
         chunks = []
         start = 0
         while start < len(text):
             # Find the end of the chunk
-            end = start + self.chunk_size
+            end = min(start + self.chunk_size, len(text))
 
             # If we're not at the end of the text, try to break at a sentence
             if end < len(text):
                 # Look for sentence boundaries (., !, ?)
-                for i in range(min(end + 100, len(text)) - 1, start + self.chunk_size - 100, -1):
-                    if text[i] in ".!?" and text[i + 1].isspace():
-                        end = i + 1
+                last_boundary = end
+                for i in range(end - 1, max(start, end - 100), -1):
+                    if i < len(text) and text[i] in ".!?" and i + 1 < len(text) and text[i + 1].isspace():
+                        last_boundary = i + 1
                         break
+                end = last_boundary
 
             # Create chunk with metadata
             chunk_metadata = {**metadata, "chunk_start": start, "chunk_end": end}
             chunks.append(Document(content=text[start:end].strip(), metadata=chunk_metadata))
 
             # Move start position for next chunk
-            start = end - self.chunk_overlap
+            start = max(start + 1, end - self.chunk_overlap)
 
         return chunks

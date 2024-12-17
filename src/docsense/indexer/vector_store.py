@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-import faiss
+import faiss  # type: ignore
 import numpy as np
 
 from .document import Document
@@ -48,10 +48,8 @@ class VectorStore:
         self.index_path = Path(index_path) if index_path else None
         self.use_gpu = use_gpu and faiss.get_num_gpus() > 0
 
-        # Use IVF index for faster search
-        nlist = 100  # number of clusters
-        quantizer = faiss.IndexFlatL2(dimension)
-        self.index = faiss.IndexIVFFlat(quantizer, dimension, nlist)
+        # Use simple FlatL2 index instead of IVF for testing
+        self.index = faiss.IndexFlatL2(dimension)
 
         if self.use_gpu:
             self.gpu_resources = faiss.StandardGpuResources()
@@ -213,6 +211,8 @@ class VectorStore:
         the cleared state will be saved to disk.
         """
         self.index = faiss.IndexFlatL2(self.dimension)
+        if self.use_gpu:
+            self.index = faiss.index_cpu_to_gpu(self.gpu_resources, 0, self.index)
         self.documents = []
 
         if self.index_path:

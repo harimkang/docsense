@@ -101,18 +101,17 @@ class DocumentLoader:
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
+                # Remove BOM if present
+                if content.startswith("\ufeff"):
+                    content = content[1:]
                 return content
         except UnicodeDecodeError:
             # Try different encodings
             for encoding in ["utf-8-sig", "cp1252", "latin1"]:
                 try:
                     with open(file_path, "r", encoding=encoding) as f:
-                        content = f.read()
-                        return content
+                        return f.read()
                 except UnicodeDecodeError:
                     continue
             print(f"Failed to read {file_path} with all attempted encodings")
-            raise
-        except Exception as e:
-            print(f"Unexpected error reading {file_path}: {str(e)}")
             raise
