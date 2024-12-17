@@ -64,3 +64,5 @@ index/
 docs/_build/
 docs/source/
 docs/api/
+
+.ruff_cache/

@@ -113,15 +113,6 @@ myst_enable_extensions = [
     "tasklist",
 ]
 
-# Add autodoc settings
-autodoc_default_options = {
-    "members": True,
-    "member-order": "bysource",
-    "special-members": "__init__",
-    "undoc-members": True,
-    "exclude-members": "__weakref__",
-}
-
 # Add autosummary settings
 autosummary_generate = True
 autosummary_generate_overwrite = True
@@ -130,16 +121,3 @@ add_module_names = False
 # Create api directory if it doesn't exist
 if not os.path.exists("api"):
     os.makedirs("api")
-
-# Add napoleon settings for Google style docstrings
-napoleon_google_docstring = True
-napoleon_numpy_docstring = True
-napoleon_include_init_with_doc = True
-napoleon_include_private_with_doc = False
-napoleon_include_special_with_doc = True
-napoleon_use_admonition_for_examples = True
-napoleon_use_admonition_for_notes = True
-napoleon_use_admonition_for_references = True
-napoleon_use_ivar = False
-napoleon_use_param = True
-napoleon_use_rtype = True
