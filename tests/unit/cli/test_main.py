@@ -68,15 +68,21 @@ def test_ask_command(mock_docsense, tmp_path):
         "answer": "Test answer",
         "sources": [{"path": "test.txt", "type": "text", "relevance_score": 0.9}],
     }
+    # Create a dummy index file
+    index_path = tmp_path / "index"
+    index_path.mkdir(parents=True)
 
     # Act
-    result = runner.invoke(app, ["ask", "test question"])
+    result = runner.invoke(app, ["ask", "test question", "--index-path", str(index_path)])
 
     # Assert
     assert result.exit_code == 0
-    assert "Processing your question..." in result.stdout
-    assert "Test answer" in result.stdout
-    mock_docsense["ask_question"].assert_called_once()
+    mock_docsense["ask_question"].assert_called_once_with(
+        "test question",
+        model_name="Qwen/Qwen2-7B",
+        device="cuda",
+        index_path=str(index_path),
+    )
 
 
 def test_ask_command_no_index(mock_docsense, tmp_path):
