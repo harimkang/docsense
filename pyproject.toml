@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools>=65.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docsense"
+version = "0.1.0"
+description = "An intelligent document assistant powered by Qwen"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = {text = "MIT"}
+authors = [
+    {name = "Harim Kang", email = "harimkang4422@gmail.com"}
+]
+keywords = ["nlp", "document-qa", "qwen", "embeddings"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: General",
+]
+
+dependencies = [
+    "torch>=2.2.0",
+    "transformers>=4.37.0",
+    "numpy>=1.21.0,<2.0.0",
+    "faiss-cpu>=1.7.4",  # Base CPU version
+    "typer[all]>=0.9.0",
+    "bitsandbytes>=0.41.0;python_version<='3.10'",
+    "bitsandbytes>=0.42.0;python_version>'3.10'",
+    "accelerate>=0.21.0",
+    "pathlib>=1.0.1",
+    "tiktoken>=0.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+# GPU support should be installed via conda
+
+[project.urls]
+Homepage = "https://github.com/yourusername/docsense"
+Documentation = "https://github.com/yourusername/docsense#readme"
+Repository = "https://github.com/yourusername/docsense.git"
+Issues = "https://github.com/yourusername/docsense/issues"
+
+[project.scripts]
+docsense = "docsense.cli.main:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["docsense"]
+
+[tool.setuptools.package-data]
+docsense = ["py.typed"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+]
+
+[tool.ruff.isort]
+known-first-party = ["docsense"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra -q --cov=docsense"
