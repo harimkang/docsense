@@ -62,7 +62,7 @@ docsense index /path/to/your/documents
 Ask a question to your documents:
 
 ```bash
-docsense ask "What is the meaning of life?"
+docsense ask "How to use this library?"
 ```
 
 ### Interactive Mode
