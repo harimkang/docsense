@@ -50,7 +50,20 @@ def index(
     device: str = "cuda",
     index_path: Optional[Path] = DEFAULT_INDEX_PATH,
 ):
-    """Create document index from the specified path."""
+    """Create document index from the specified path.
+
+    This command processes documents from the given directory and creates a vector index
+    for semantic search capabilities.
+
+    Args:
+        path: Directory path containing documents to index
+        model_name: Name of the embedding model to use
+        device: Computing device to use ('cuda' or 'cpu')
+        index_path: Path to save the generated index (uses default if not specified)
+
+    Raises:
+        typer.Exit: If an error occurs during indexing
+    """
     try:
         console.print(Panel("Creating document index...", title="DocSense"))
         if index_path == DEFAULT_INDEX_PATH:
@@ -75,7 +88,20 @@ def ask(
     device: str = "cuda",
     index_path: Optional[Path] = DEFAULT_INDEX_PATH,
 ):
-    """Ask a question and get an answer."""
+    """Ask a question and get an answer based on indexed documents.
+
+    This command processes a natural language question and returns an answer
+    based on the content of indexed documents.
+
+    Args:
+        question: The question to ask
+        model_name: Name of the model to use for processing
+        device: Computing device to use ('cuda' or 'cpu')
+        index_path: Path to the document index (uses default if not specified)
+
+    Raises:
+        typer.Exit: If index is not found or an error occurs during processing
+    """
     try:
         if not isinstance(index_path, Path) or not index_path.exists():
             console.print("[red]No index found. Please create an index first using 'docsense index'[/red]")
@@ -105,7 +131,19 @@ def daemon(
     device: str = "cuda",
     index_path: Optional[Path] = DEFAULT_INDEX_PATH,
 ):
-    """Start DocSense in daemon mode for faster responses."""
+    """Start DocSense in daemon mode for faster responses.
+
+    This command starts an interactive session where the model stays loaded in memory,
+    allowing for faster consecutive queries without reloading the model each time.
+
+    Args:
+        model_name: Name of the model to use for processing
+        device: Computing device to use ('cuda' or 'cpu')
+        index_path: Path to the document index (uses default if not specified)
+
+    Raises:
+        typer.Exit: If an error occurs during daemon operation
+    """
     try:
         start_time = time.time()
         ds = get_docsense(model_name=model_name, device=device, index_path=str(index_path))

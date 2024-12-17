@@ -43,6 +43,13 @@ dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
 ]
+docs = [
+    "sphinx>=4.0.0",
+    "sphinx-rtd-theme",
+    "sphinx-autodoc-typehints",
+    "sphinx-autobuild",
+    "myst-parser",  # Markdown 지원을 위해 추가
+]
 
 # GPU support should be installed via conda
 

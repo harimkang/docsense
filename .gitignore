@@ -59,3 +59,8 @@ htmlcov/
 *.pth
 data/
 index/
+
+# Docs
+docs/_build/
+docs/source/
+docs/api/
