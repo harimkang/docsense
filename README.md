@@ -6,14 +6,14 @@
 [![Tests](https://github.com/harimkang/docsense/actions/workflows/test.yml/badge.svg)](https://github.com/harimkang/docsense/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/harimkang/docsense/branch/main/graph/badge.svg)](https://codecov.io/gh/harimkang/docsense)
 
-An intelligent document assistant powered by Large Language Models 🤖
+An intelligent document assistant powered by Open-Source Large Language Models 🤖
 
-DocSense is a powerful tool that helps you interact with your documents using natural language. It currently uses the Qwen language model (with plans to support more models) to understand and answer questions about your documents with high accuracy and context awareness.
+DocSense is a powerful tool that helps you interact with your documents using natural language. It leverages the open-source Qwen language model (with plans to support more open-source models) to understand and answer questions about your documents with high accuracy and context awareness, all completely free to use.
 
 ## Features ✨
 
 - 🔍 Advanced semantic search using FAISS
-- 💡 Intelligent question answering with LLMs (currently Qwen)
+- 💡 Intelligent question answering with open-source LLMs (currently Qwen)
 - 📝 Support for multiple document formats (txt, md, rst, etc.)
 - ⚡ GPU acceleration for faster processing
 - 🔄 Batch processing for memory efficiency
@@ -24,7 +24,7 @@ DocSense is a powerful tool that helps you interact with your documents using na
 ### CPU Version
 
 ```bash
-    pip install docsense
+pip install docsense
 ```
 
 ### GPU Version (Recommended)
@@ -32,19 +32,19 @@ DocSense is a powerful tool that helps you interact with your documents using na
 First, install PyTorch with CUDA support:
 
 ```bash
-    conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 ```
 
 Then install FAISS with GPU support:
 
 ```bash
-    conda install -c conda-forge faiss-gpu
+conda install -c conda-forge faiss-gpu
 ```
 
 Finally, install DocSense:
 
 ```bash
-    pip install docsense
+pip install docsense
 ```
 
 ## Usage 🚀
@@ -54,7 +54,7 @@ Finally, install DocSense:
 Index your documents directory:
 
 ```bash
-    docsense index /path/to/your/documents
+docsense index /path/to/your/documents
 ```
 
 ### Asking Questions
@@ -62,7 +62,7 @@ Index your documents directory:
 Ask a question to your documents:
 
 ```bash
-    docsense ask "What is the meaning of life?"
+docsense ask "What is the meaning of life?"
 ```
 
 ### Interactive Mode
@@ -70,7 +70,7 @@ Ask a question to your documents:
 Start an interactive session for multiple questions:
 
 ```bash
-    docsense daemon
+docsense daemon
 ```
 
 ### Command Line Options
@@ -84,7 +84,7 @@ All commands support the following options:
 Example with options:
 
 ```bash
-    docsense index /path/to/your/documents --model-name "Qwen/Qwen2-7B" --device "cuda" --index-path /path/to/your/index
+docsense index /path/to/your/documents --model-name "Qwen/Qwen2-7B" --device "cuda" --index-path /path/to/your/index
 ```
 
 ## License 📄
